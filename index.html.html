@@ -1,0 +1,2182 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S.O.P.E. - Painel Operacional</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0e27;
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a2547 100%);
+        }
+
+        .login-box {
+            background: #1a2547;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            max-width: 500px;
+            width: 100%;
+            border: 2px solid #2a4d9e;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .logo-shield {
+            font-size: 60px;
+        }
+
+        .logo-text {
+            text-align: left;
+        }
+
+        .logo-text h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #4a9eff;
+            margin: 0;
+            line-height: 1;
+            letter-spacing: 2px;
+        }
+
+        .logo-text p {
+            font-size: 12px;
+            color: #b0b8cc;
+            margin: 8px 0 0 0;
+            font-weight: 400;
+            line-height: 1.4;
+        }
+
+        .login-box h2 {
+            color: #4a9eff;
+            font-size: 18px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #4a9eff;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #2a4d9e;
+            border-radius: 6px;
+            font-size: 14px;
+            background: #0f1930;
+            color: #fff;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #4a9eff;
+            box-shadow: 0 0 10px rgba(74, 158, 255, 0.3);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #2a4d9e 0%, #4a9eff 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(74, 158, 255, 0.4);
+        }
+
+        .error { 
+            color: #ff6b6b; 
+            font-size: 13px; 
+            margin-top: 10px; 
+            display: none; 
+            background: #2a1a1a; 
+            padding: 10px; 
+            border-radius: 4px; 
+        }
+
+        .demo-info { 
+            margin-top: 25px; 
+            padding-top: 20px; 
+            border-top: 1px solid #2a4d9e; 
+            font-size: 11px; 
+            color: #b0b8cc; 
+            text-align: center; 
+        }
+
+        .demo-info p {
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+
+        .hidden { display: none !important; }
+
+        .dashboard { 
+            display: none; 
+            min-height: 100vh; 
+            background: #0a0e27; 
+            flex-direction: column; 
+        }
+
+        .dashboard.active { display: flex; }
+
+        .header {
+            background: linear-gradient(135deg, #1a2547 0%, #2a4d9e 100%);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 3px solid #4a9eff;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-logo {
+            font-size: 40px;
+        }
+
+        .header-title {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .header-title h1 {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0;
+            color: #fff;
+            letter-spacing: 1px;
+        }
+
+        .header-title p {
+            font-size: 10px;
+            opacity: 0.8;
+            margin: 0;
+            font-weight: 400;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #4a9eff 0%, #2a4d9e 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(74, 158, 255, 0.5);
+            color: #4a9eff;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .logout-btn:hover {
+            background: rgba(74, 158, 255, 0.2);
+        }
+
+        .content {
+            flex: 1;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 25px 20px;
+            width: 100%;
+            overflow-y: auto;
+        }
+
+        .page-title {
+            color: #4a9eff;
+            font-size: 26px;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #1a2547 0%, #132140 100%);
+            padding: 18px;
+            border-radius: 8px;
+            border: 2px solid #2a4d9e;
+        }
+
+        .metric-label {
+            color: #4a9eff;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .metric-value {
+            color: #fff;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .form-section {
+            background: linear-gradient(135deg, #1a2547 0%, #132140 100%);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border: 2px solid #2a4d9e;
+        }
+
+        .section-title {
+            color: #4a9eff;
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 18px;
+            border-bottom: 2px solid #2a4d9e;
+            padding-bottom: 10px;
+        }
+
+        textarea, input[type="text"], input[type="date"], input[type="time"], input[type="file"], input[type="month"], select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #2a4d9e;
+            border-radius: 6px;
+            font-size: 13px;
+            background: #0f1930;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+
+        textarea:focus, input:focus, select:focus {
+            outline: none;
+            border-color: #4a9eff;
+            box-shadow: 0 0 10px rgba(74, 158, 255, 0.3);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 11px 22px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2a4d9e 0%, #4a9eff 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(74, 158, 255, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #c41e3a 0%, #ff6b6b 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .chart-container {
+            background: linear-gradient(135deg, #1a2547 0%, #132140 100%);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border: 2px solid #2a4d9e;
+            height: 400px;
+            position: relative;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .photo-item {
+            position: relative;
+            cursor: pointer;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 2px solid #4a9eff;
+            height: 120px;
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .remove-photo {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .report-card {
+            background: #0f1930;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 2px solid #2a4d9e;
+            display: flex;
+            gap: 15px;
+        }
+
+        .report-content {
+            flex: 1;
+        }
+
+        .report-header {
+            color: #4a9eff;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .report-details {
+            color: #b0b8cc;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .report-photos {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .report-photo-small {
+            width: 80px;
+            height: 80px;
+            border-radius: 6px;
+            object-fit: cover;
+            border: 2px solid #4a9eff;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .report-photo-small:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(74, 158, 255, 0.5);
+        }
+
+        .reports-scroll {
+            max-height: 600px;
+            overflow-y: auto;
+            border: 2px solid #2a4d9e;
+            border-radius: 8px;
+            padding: 15px;
+            background: linear-gradient(135deg, #0f1930 0%, #0a0e27 100%);
+        }
+
+        .reports-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .reports-scroll::-webkit-scrollbar-track {
+            background: #0a0e27;
+            border-radius: 4px;
+        }
+
+        .reports-scroll::-webkit-scrollbar-thumb {
+            background: #4a9eff;
+            border-radius: 4px;
+        }
+
+        .reports-scroll::-webkit-scrollbar-thumb:hover {
+            background: #6ab4ff;
+        }
+
+        /* MODAL FOTO */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            animation: fadeIn 0.3s;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90vh;
+            position: relative;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from { 
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to { 
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-content img {
+            max-width: 100%;
+            max-height: 85vh;
+            border-radius: 8px;
+            object-fit: contain;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            background: rgba(255, 107, 107, 0.8);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ff6b6b;
+        }
+
+        .modal-close:hover {
+            background: #ff6b6b;
+        }
+
+        /* MODAL EMPLOYEE */
+        .modal-employee {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-employee.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-employee-content {
+            background: linear-gradient(135deg, #2a4d9e 0%, #1a2547 100%);
+            max-width: 500px;
+            width: 90%;
+            padding: 40px;
+            border-radius: 12px;
+            border: 3px solid #4a9eff;
+            text-align: center;
+            position: relative;
+            animation: slideIn 0.3s;
+        }
+
+        .modal-employee-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        .modal-employee-photo {
+            width: 200px;
+            height: 320px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin: 0 auto 20px;
+            border: 4px solid #4a9eff;
+            display: block;
+            box-shadow: 0 0 30px rgba(74, 158, 255, 0.5);
+        }
+
+        .modal-employee-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #4a9eff;
+            margin-bottom: 8px;
+        }
+
+        .modal-employee-role {
+            font-size: 14px;
+            color: #b0b8cc;
+            margin-bottom: 20px;
+        }
+
+        .modal-employee-honor {
+            font-size: 14px;
+            color: #b0b8cc;
+            font-style: italic;
+            line-height: 1.6;
+            background: rgba(74, 158, 255, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #4a9eff;
+        }
+
+        .todo-item {
+            background: #0f1930;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border-left: 4px solid #4a9eff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .todo-time {
+            color: #4a9eff;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .todo-post {
+            color: #b0b8cc;
+            font-size: 13px;
+            margin: 0 15px;
+            flex: 1;
+        }
+
+        .todo-status {
+            background: linear-gradient(135deg, #2aad5a 0%, #1a8a3a 100%);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .employee-card-client {
+            background: linear-gradient(135deg, #2a4d9e 0%, #1a2547 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #4a9eff;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .employee-card-client:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(74, 158, 255, 0.3);
+        }
+
+        .employee-photo-card {
+            width: 120px;
+            height: 190px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin: 0 auto 15px;
+            border: 3px solid #4a9eff;
+            display: block;
+            box-shadow: 0 0 20px rgba(74, 158, 255, 0.4);
+        }
+
+        .blog-card {
+            background: #0f1930;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            border: 2px solid #2a4d9e;
+        }
+
+        .blog-title {
+            color: #4a9eff;
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .blog-date {
+            color: #7a8aaa;
+            font-size: 11px;
+            margin-bottom: 8px;
+        }
+
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        .user-table th {
+            background: #0f1930;
+            color: #4a9eff;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border: 2px solid #2a4d9e;
+        }
+
+        .user-table td {
+            padding: 12px;
+            border: 1px solid #2a4d9e;
+            color: #b0b8cc;
+        }
+
+        .user-table tr:hover {
+            background: rgba(74, 158, 255, 0.1);
+        }
+
+        .dual-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 1024px) {
+            .dual-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            .header {
+                flex-wrap: wrap;
+            }
+            .report-card {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- LOGIN -->
+    <div class="login-container" id="loginContainer">
+        <div class="login-box">
+            <div class="logo-section">
+                <div class="logo-container">
+                    <div class="logo-shield">🛡️</div>
+                    <div class="logo-text">
+                        <h1>S.O.P.E.</h1>
+                        <p>Segurança Ostensiva<br>Preventiva Especializada</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Painel Operacional</h2>
+
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Usuário</label>
+                    <input type="text" id="username" required autofocus>
+                </div>
+                <div class="form-group">
+                    <label>Senha</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="login-btn">ENTRAR</button>
+                <div class="error" id="loginError"></div>
+            </form>
+
+            <div class="demo-info">
+                <p><strong>⚠️ Acesso Restrito</strong></p>
+                <p>Se esquecer sua senha, procure pelo supervisor responsável.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL FOTO -->
+    <div id="photoModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closePhotoModal()">&times;</span>
+            <img id="modalImage" src="" alt="Foto ampliada">
+        </div>
+    </div>
+
+    <!-- MODAL CÂMERA -->
+    <div id="cameraModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background: #0a0e27; border-radius: 12px; padding: 20px; max-width: 500px; width: 90%; text-align: center; border: 2px solid #2a4d9e;">
+            <h2 style="color: #4a9eff; margin-bottom: 15px;">📷 Câmera</h2>
+            <video id="cameraFeed" autoplay playsinline style="width: 100%; border-radius: 8px; background: #000; margin-bottom: 15px; display: none;"></video>
+            <canvas id="cameraCanvas" style="width: 100%; border-radius: 8px; margin-bottom: 15px; display: none;"></canvas>
+            <img id="capturedPhoto" style="width: 100%; border-radius: 8px; margin-bottom: 15px; display: none;">
+            <div id="cameraControls" style="display: flex; gap: 10px; justify-content: center; margin-bottom: 15px;">
+                <button class="btn btn-primary" onclick="startCamera()" id="startBtn">▶️ INICIAR</button>
+                <button class="btn btn-primary" onclick="capturePhoto()" id="captureBtn" style="display: none;">📸 CAPTURAR</button>
+                <button class="btn btn-primary" onclick="retakeCameraPhoto()" id="retakeBtn" style="display: none;">🔄 REFAZER</button>
+                <button class="btn btn-primary" onclick="acceptCameraPhoto()" id="acceptBtn" style="display: none;">✅ CONFIRMAR</button>
+            </div>
+            <button class="btn btn-secondary" onclick="closeCameraModal()" style="width: 100%;">❌ FECHAR</button>
+        </div>
+    </div>
+
+    <!-- MODAL EMPLOYEE DESTACADO -->
+    <div id="employeeModal" class="modal-employee">
+        <div class="modal-employee-content">
+            <button class="modal-employee-close" onclick="closeEmployeeModal()">✕</button>
+            <img id="employeeModalPhoto" class="modal-employee-photo" alt="Funcionário">
+            <div class="modal-employee-name" id="employeeModalName">Nome</div>
+            <div class="modal-employee-role" id="employeeModalRole">Cargo</div>
+            <div class="modal-employee-honor" id="employeeModalHonor">"Homenagem"</div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="dashboard" id="dashboardContainer">
+        <div class="header">
+            <div class="header-left">
+                <div class="header-logo">🛡️</div>
+                <div class="header-title">
+                    <h1>S.O.P.E.</h1>
+                    <p>Segurança Ostensiva Preventiva Especializada</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <span id="userNameDisplay">Usuário</span>
+                <div class="user-avatar" id="userAvatarDisplay">U</div>
+                <button class="logout-btn" onclick="handleLogout()">SAIR</button>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- COORDENADOR -->
+            <div id="coordinatorView" class="hidden">
+                <h1 class="page-title">📊 Dashboard - Gerenciamento</h1>
+
+                <!-- GERENCIAR USUÁRIOS -->
+                <div class="form-section">
+                    <h2 class="section-title">👥 Gerenciar Usuários</h2>
+                    <div class="form-row">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Novo Usuário:</label>
+                            <input type="text" id="newUsername" placeholder="Ex: novo.usuario" style="margin-bottom: 10px;">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Nova Senha:</label>
+                            <input type="text" id="newPassword" placeholder="Defina uma senha" style="margin-bottom: 10px;">
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn btn-primary" onclick="addUser()">➕ ADICIONAR</button>
+                        <button class="btn btn-primary" onclick="toggleUserList()">📋 VER TODOS</button>
+                    </div>
+                </div>
+
+                <!-- LISTA DE USUÁRIOS -->
+                <div class="form-section" id="userListSection" style="display: none;">
+                    <h2 class="section-title">📋 Lista de Usuários</h2>
+                    <table class="user-table">
+                        <thead>
+                            <tr>
+                                <th>Usuário</th>
+                                <th>Senha</th>
+                                <th>Tipo</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userTableBody"></tbody>
+                    </table>
+                </div>
+
+                <!-- FUNCIONÁRIO DO MÊS - EDIÇÃO -->
+                <div class="form-section">
+                    <h2 class="section-title">🏆 Funcionário do Mês</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nome:</label>
+                            <input type="text" id="employeeName" placeholder="Nome do funcionário">
+                        </div>
+                        <div class="form-group">
+                            <label>Cargo:</label>
+                            <input type="text" id="employeeRole" placeholder="Ex: Supervisor Diurno">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Foto:</label>
+                            <input type="file" id="employeePhoto" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn btn-primary" onclick="saveEmployee()">💾 SALVAR FUNCIONÁRIO</button>
+                        <button class="btn btn-secondary" onclick="clearEmployee()">🗑️ LIMPAR</button>
+                    </div>
+                    <div id="employeePreview" style="margin-top: 15px; text-align: center;"></div>
+                </div>
+
+                <!-- FILTROS -->
+                <div class="form-section">
+                    <h2 class="section-title">🔍 Filtrar Relatórios</h2>
+                    <div class="form-row">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Período:</label>
+                            <select id="coordPeriod" onchange="updateCoordinatorReports()" style="margin-bottom: 0;">
+                                <option value="day">DIA ATUAL</option>
+                                <option value="week">ESTA SEMANA</option>
+                                <option value="month">ESTE MÊS</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Supervisor:</label>
+                            <select id="coordSupervisor" onchange="updateCoordinatorReports()" style="margin-bottom: 0;">
+                                <option value="">TODOS</option>
+                                <option value="João Ferreira">João Ferreira (Diurno)</option>
+                                <option value="Weslley Manzoni">Weslley Manzoni (Noturno)</option>
+                                <option value="Ana Carolina">Ana Carolina (Líder)</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Posto:</label>
+                            <select id="coordPost" onchange="updateCoordinatorReports()" style="margin-bottom: 0;">
+                                <option value="">TODOS</option>
+                                <option value="JOÃO XXIII">JOÃO XXIII</option>
+                                <option value="SUNVILLE">SUNVILLE</option>
+                                <option value="OMEGA">OMEGA</option>
+                                <option value="VILA HÉLIO">VILA HÉLIO</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MÉTRICAS -->
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-label">Total Relatórios</div>
+                        <div class="metric-value" id="coordTotalReports">0</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Total Minutos</div>
+                        <div class="metric-value" id="coordTotalMinutes">0</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Taxa Média</div>
+                        <div class="metric-value" id="coordTotalRate">0%</div>
+                    </div>
+                </div>
+
+                <!-- GRÁFICOS -->
+                <div class="dual-layout">
+                    <div class="chart-container">
+                        <canvas id="supervisorsChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="supervisorPieChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- RELATÓRIOS -->
+                <div class="form-section">
+                    <h2 class="section-title">📋 Relatórios</h2>
+                    <div class="reports-scroll" id="coordinatorReports"></div>
+                </div>
+            </div>
+
+            <!-- SUPERVISOR/LÍDER -->
+            <div id="supervisorView" class="hidden">
+                <h1 class="page-title" id="supervisorTitle">👤 Minhas Rondas Hoje</h1>
+
+                <!-- RONDAS PROGRAMADAS DO DIA -->
+                <div class="form-section">
+                    <h2 class="section-title">📋 Rondas Programadas para Hoje</h2>
+                    <div id="todaysRondas"></div>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-label">Rondas do Dia</div>
+                        <div class="metric-value" id="supTodayRondas">0</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Rondas Completas</div>
+                        <div class="metric-value" id="supCompletedRondas">0</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Total Minutos</div>
+                        <div class="metric-value" id="supTotalMinutes">0</div>
+                    </div>
+                </div>
+
+                <!-- MEUS RELATÓRIOS DO DIA -->
+                <div class="form-section">
+                    <h2 class="section-title">📝 Meus Relatórios Enviados Hoje</h2>
+                    <div class="reports-scroll" id="supervisorTodayReports"></div>
+                </div>
+
+                <!-- FORMULÁRIO RELATÓRIO -->
+                <div class="form-section">
+                    <h2 class="section-title">📝 Preencher Novo Relatório</h2>
+                    <div class="form-row">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Data:</label>
+                            <input type="date" id="reportDate" style="margin-bottom: 10px;">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Posto:</label>
+                            <select id="reportPost" style="margin-bottom: 10px;">
+                                <option value="">SELECIONE...</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Chegada:</label>
+                            <input type="time" id="reportChegada" style="margin-bottom: 10px;">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Saída:</label>
+                            <input type="time" id="reportSaida" style="margin-bottom: 10px;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Observações:</label>
+                        <textarea id="reportObs" placeholder="Descreva..." style="margin-bottom: 10px;"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Fotos do Relatório (até 5 fotos):</label>
+                        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                            <button class="btn btn-primary" type="button" onclick="openCameraModal()" style="flex: 1;">📷 TIRAR FOTO</button>
+                            <input type="file" id="reportPhotos" accept="image/*" multiple style="margin: 0; flex: 1;">
+                        </div>
+                        <div id="photosCount" style="font-size: 12px; color: #7a8aaa; margin-bottom: 10px;">0/5 fotos</div>
+                        <div id="photosPreview" class="photo-gallery"></div>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn btn-primary" onclick="submitReport()">✅ ENVIAR</button>
+                    </div>
+                </div>
+
+                <!-- CRIAR USUÁRIOS -->
+                <div class="form-section" id="createUserSection">
+                    <h2 class="section-title">👥 Criar Usuário Cliente</h2>
+                    <div class="form-row">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Selecione o Posto:</label>
+                            <select id="newClientPost" style="margin-bottom: 10px;">
+                                <option value="">SELECIONE...</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Usuário:</label>
+                            <input type="text" id="newClientUser" placeholder="Ex: joao.xxiii" style="margin-bottom: 10px;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Senha:</label>
+                        <input type="text" id="newClientPass" placeholder="Defina uma senha">
+                    </div>
+                    <div class="button-group">
+                        <button class="btn btn-primary" onclick="createClient()">➕ CRIAR</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CLIENTE -->
+            <div id="clientView" class="hidden">
+                <h1 class="page-title" id="clientTitle">📍 Dashboard do Posto</h1>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-label">Última Ronda</div>
+                        <div class="metric-value" id="clientLast">--</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Total de Rondas</div>
+                        <div class="metric-value" id="clientTotalRounds">0</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Taxa Média</div>
+                        <div class="metric-value" id="clientAvgRate">0%</div>
+                    </div>
+                </div>
+
+                <!-- FUNCIONÁRIO DO MÊS DESTAQUE -->
+                <div class="form-section" id="clientEmployeeSection" style="display: none;">
+                    <h2 class="section-title">🏆 Funcionário do Mês em Destaque</h2>
+                    <div class="employee-card-client" onclick="openEmployeeModal()" id="employeeCardClient"></div>
+                </div>
+
+                <!-- GRÁFICOS -->
+                <div class="dual-layout">
+                    <div class="chart-container">
+                        <canvas id="clientChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="supervisorFrequencyChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- RELATÓRIOS -->
+                <div class="form-section">
+                    <h2 class="section-title">📋 Histórico de Rondas</h2>
+                    <div class="reports-scroll" id="clientReportsWithPhotos"></div>
+                </div>
+
+                <!-- BLOG -->
+                <div class="form-section" id="clientBlogSection" style="display: none;">
+                    <h2 class="section-title">📰 Notícias</h2>
+                    <div id="clientBlogDisplay"></div>
+                </div>
+
+                <!-- REDES SOCIAIS -->
+                <div class="form-section" style="text-align: center; padding: 20px; background: linear-gradient(135deg, rgba(42, 77, 158, 0.2), rgba(74, 158, 255, 0.2)); border-radius: 8px;">
+                    <h2 class="section-title">🌐 Conecte-se com a Gente</h2>
+                    <div style="display: flex; justify-content: center; gap: 20px; margin-top: 15px;">
+                        <a href="https://www.instagram.com/sopeseguranca/" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; width: 50px; height: 50px; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); border-radius: 50%; text-decoration: none; transition: transform 0.2s;">
+                            <span style="font-size: 28px;">📷</span>
+                        </a>
+                        <a href="https://www.facebook.com/sopeseguranca/" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; width: 50px; height: 50px; background: #1877f2; border-radius: 50%; text-decoration: none; transition: transform 0.2s;">
+                            <span style="font-size: 28px;">👥</span>
+                        </a>
+                        <a href="https://sopeseguranca.com.br" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; width: 50px; height: 50px; background: #2a4d9e; border-radius: 50%; text-decoration: none; border: 2px solid #4a9eff; transition: transform 0.2s;">
+                            <span style="font-size: 28px;">🌐</span>
+                        </a>
+                    </div>
+                    <p style="color: #7a8aaa; margin-top: 15px; font-size: 13px;">Siga-nos nas redes sociais e visite nosso site</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const rondasProgramadas = {
+            'diurno': {
+                'segunda': ['JOÃO XXIII', 'PLACIDINA CENTRO', 'PLACIDINA INFANTIL'],
+                'terça': ['MURANO', 'SUNVILLE', 'DIOCESANO'],
+                'quarta': ['ALTOS DE SANTANA I', 'CLÁUDIO ABRAHÃO', 'PORTO SEGURO', 'OMEGA', 'ALTOS DE SANTANA I'],
+                'quinta': ['PLACIDINA VILA CLÉO', 'PLACIDINA CENTRO', 'HARMONIZ', 'JOÃO XXIII'],
+                'sexta': ['OMEGA', 'METAK', 'PLACIDINA INFANTIL', 'MURANO'],
+                'sábado': ['VALE ENCANTADO', 'DA FAZENDA']
+            },
+            'noturno': {
+                'segunda': ['ALTOS DE SANTANA I', 'PHOENIX', 'FLUCOR', 'PLACIDINA CENTRO', 'LED'],
+                'terça': ['JOÃO XXIII', 'PORTAL DO SOL', 'SUNVILLE', 'LASS', 'EVIVVA'],
+                'quarta': ['GARDÊNIA', 'OMEGA', 'ECOFUTURO', 'LED'],
+                'quinta': ['JOÃO XXIII', 'PLACIDINA VILA CLÉO', 'LED'],
+                'sexta': ['CLÁUDIO ABRAHÃO', 'VILA HÉLIO', 'HARMONIZ'],
+                'sábado': ['LED', 'LASS', 'EVIVVA']
+            },
+            'lider': {
+                'segunda': ['JOÃO XXIII', 'GARDÊNIA', 'ALIMENTAÇÃO', 'SUNVILLE', 'ALIMENTAÇÃO', 'OMEGA'],
+                'terça': ['SOLAR DAS ANDORINHAS', 'MORADA DO SOL', 'DIOCESANO', 'PORTAL DO SOL', 'ALTOS DE SANTANA I', 'CLÁUDIO ABRAHÃO'],
+                'quarta': ['PHOENIX', 'RECANTO DOS PINHEIROS', 'ALIMENTAÇÃO', 'BELA VISTA', 'ALIMENTAÇÃO', 'BIOCAMPOS'],
+                'quinta': ['ITAPETY I', 'ECOPLAZA', 'PORTO SEGURO', 'JOÃO XXIII', 'MURANO'],
+                'sexta': ['HILLS', 'VILA HÉLIO', 'ALIMENTAÇÃO', 'REGINA BALLET'],
+                'sábado': ['JOÃO XXIII', 'ITAPETY I']
+            }
+        };
+
+        const allPosts = {
+            diurno: ["JOÃO XXIII","PORTO SEGURO","CLÁUDIO ABRAHÃO","ALTOS DE SANTANA I","SUNVILLE","PORTAL DO SOL","OMEGA","HARMONIZ","VILA HÉLIO","FLUCOR","METAK","VALE ENCANTADO","DA FAZENDA","PLACIDINA CENTRO","PLACIDINA INFANTIL","PLACIDINA VILA CLÉO","DIOCESANO PAULO VI"],
+            noturno: ["JOÃO XXIII","GARDÊNIA","ALTOS DE SANTANA I","CLÁUDIO ABRAHÃO","PORTAL DO SOL","PHOENIX","SUNVILLE","OMEGA","VILA HÉLIO","FLUCOR","ECOFUTURO","HARMONIZ","PLACIDINA CENTRO","PLACIDINA VILA CLÉO","LED","LASS","EVIVVA"],
+            lider: ["JOÃO XXIII","GARDÊNIA","PORTO SEGURO","HILLS","CLÁUDIO ABRAHÃO","PORTAL DO SOL","BELLA VISTA I","ALTOS DE SANTANA I","RECANTO DOS PINHEIROS","PHOENIX","SUNVILLE","SOLAR DAS ANDORINHAS","MORADA DO SOL","ITAPETY I","ECO PLAZA","OMEGA","VILA HÉLIO","BIOCAMPOS","REGINA BALLET","DIOCESANO PAULO VI"]
+        };
+
+        let defaultUsers = {
+            'seu.nome': { password: 'senha123', role: 'coordinator', name: 'Coordenador' },
+            'joao.ferreira': { password: 'senha123', role: 'supervisor_day', name: 'João Ferreira' },
+            'weslley.manzoni': { password: 'senha123', role: 'supervisor_night', name: 'Weslley Manzoni' },
+            'ana.carolina': { password: 'senha123', role: 'leader', name: 'Ana Carolina' }
+        };
+
+        let users = { ...defaultUsers };
+        let currentUser = null;
+        let reports = [];
+        let employee = null;
+        let blogs = [];
+        let clientUsers = {};
+        let photosToAdd = [];
+        
+        // URL do Google Sheets API
+        const GOOGLE_SHEETS_API = 'https://script.google.com/macros/s/AKfycbzMPO-pjk9gqGKyatRmozif32sOV7qpfHIUvz4e3F8TzafRozQCDpkv-8l23J7U7ltiTw/exec';
+
+        function openPhotoModal(src) {
+            const modal = document.getElementById('photoModal');
+            const img = document.getElementById('modalImage');
+            img.src = src;
+            modal.classList.add('show');
+        }
+
+        function closePhotoModal() {
+            const modal = document.getElementById('photoModal');
+            modal.classList.remove('show');
+        }
+
+        function openEmployeeModal() {
+            if (!employee || !employee.photo) return;
+            const modal = document.getElementById('employeeModal');
+            document.getElementById('employeeModalPhoto').src = employee.photo;
+            document.getElementById('employeeModalName').textContent = employee.name;
+            document.getElementById('employeeModalRole').textContent = employee.role;
+            document.getElementById('employeeModalHonor').textContent = `"${employee.honor}"`;
+            modal.classList.add('show');
+        }
+
+        function closeEmployeeModal() {
+            const modal = document.getElementById('employeeModal');
+            modal.classList.remove('show');
+        }
+
+        window.onclick = function(event) {
+            const photoModal = document.getElementById('photoModal');
+            const employeeModal = document.getElementById('employeeModal');
+            if (event.target === photoModal) closePhotoModal();
+            if (event.target === employeeModal) closeEmployeeModal();
+        }
+
+        document.addEventListener('change', (e) => {
+            if (e.target.id === 'reportPhotos') {
+                let newPhotos = Array.from(e.target.files);
+                
+                // Validar máximo 5 fotos total
+                if (photosToAdd.length + newPhotos.length > 5) {
+                    alert('⚠️ Máximo de 5 fotos permitidas!');
+                    e.target.value = '';
+                    return;
+                }
+                
+                photosToAdd = photosToAdd.concat(newPhotos);
+                const previewContainer = document.getElementById('photosPreview');
+                previewContainer.innerHTML = '';
+                
+                photosToAdd.forEach((file, index) => {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        const div = document.createElement('div');
+                        div.className = 'photo-item';
+                        div.innerHTML = `
+                            <img src="${ev.target.result}" alt="Foto ${index + 1}">
+                            <button type="button" class="remove-photo" onclick="removePhoto(${index})">✕</button>
+                        `;
+                        previewContainer.appendChild(div);
+                    };
+                    reader.readAsDataURL(file);
+                });
+                
+                document.getElementById('photosCount').textContent = photosToAdd.length + '/5 fotos';
+            }
+        });
+
+        function removePhoto(index) {
+            photosToAdd.splice(index, 1);
+            document.getElementById('reportPhotos').value = '';
+            const previewContainer = document.getElementById('photosPreview');
+            previewContainer.innerHTML = '';
+            photosToAdd.forEach((file, i) => {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const div = document.createElement('div');
+                    div.className = 'photo-item';
+                    div.innerHTML = `
+                        <img src="${ev.target.result}" alt="Foto ${i + 1}">
+                        <button type="button" class="remove-photo" onclick="removePhoto(${i})">✕</button>
+                    `;
+                    previewContainer.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            });
+            document.getElementById('photosCount').textContent = photosToAdd.length + '/5 fotos';
+        }
+
+        function addUser() {
+            const username = document.getElementById('newUsername').value;
+            const password = document.getElementById('newPassword').value;
+
+            if (!username || !password) {
+                alert('⚠️ Preencha usuário e senha!');
+                return;
+            }
+
+            if (users[username]) {
+                alert('⚠️ Usuário já existe!');
+                return;
+            }
+
+            users[username] = { password, role: 'custom', name: username };
+            localStorage.setItem('sope_users', JSON.stringify(users));
+            
+            document.getElementById('newUsername').value = '';
+            document.getElementById('newPassword').value = '';
+            
+            alert('✅ Usuário adicionado!');
+            updateUserTable();
+        }
+
+        function deleteUser(username) {
+            if (Object.keys(defaultUsers).includes(username)) {
+                alert('⚠️ Não é possível deletar usuários padrão!');
+                return;
+            }
+
+            if (confirm(`Tem certeza que quer deletar ${username}?`)) {
+                delete users[username];
+                localStorage.setItem('sope_users', JSON.stringify(users));
+                updateUserTable();
+                alert('✅ Usuário deletado!');
+            }
+        }
+
+        function updateUserTable() {
+            const tbody = document.getElementById('userTableBody');
+            tbody.innerHTML = '';
+
+            Object.entries(users).forEach(([username, data]) => {
+                const typeLabel = data.role === 'coordinator' ? 'Coordenador' : data.role === 'supervisor_day' ? 'Sup. Diurno' : data.role === 'supervisor_night' ? 'Sup. Noturno' : data.role === 'leader' ? 'Líder' : 'Custom';
+                const canDelete = !Object.keys(defaultUsers).includes(username);
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${username}</td>
+                        <td>${data.password}</td>
+                        <td>${typeLabel}</td>
+                        <td>
+                            ${canDelete ? `<button class="btn btn-danger" style="padding: 6px 12px; font-size: 11px;" onclick="deleteUser('${username}')">🗑️ DEL</button>` : '—'}
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function toggleUserList() {
+            const section = document.getElementById('userListSection');
+            section.style.display = section.style.display === 'none' ? 'block' : 'none';
+            if (section.style.display === 'block') {
+                updateUserTable();
+            }
+        }
+
+        function saveEmployee() {
+            const name = document.getElementById('employeeName').value;
+            const role = document.getElementById('employeeRole').value;
+            const photoInput = document.getElementById('employeePhoto');
+            
+            if (!name.trim()) {
+                alert('⚠️ Preencha o nome do funcionário!');
+                return;
+            }
+
+            let photo = '';
+            if (photoInput.files && photoInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    photo = e.target.result;
+                    employee = {
+                        name: name.trim(),
+                        role: role.trim() || 'Destaque do Mês',
+                        photo: photo
+                    };
+                    localStorage.setItem('sope_employee', JSON.stringify(employee));
+                    loadEmployeePreview();
+                    alert('✅ Funcionário do mês salvo com foto!');
+                };
+                reader.readAsDataURL(photoInput.files[0]);
+            } else {
+                employee = {
+                    name: name.trim(),
+                    role: role.trim() || 'Destaque do Mês',
+                    photo: ''
+                };
+                localStorage.setItem('sope_employee', JSON.stringify(employee));
+                loadEmployeePreview();
+                alert('✅ Funcionário do mês salvo!');
+            }
+        }
+
+        function clearEmployee() {
+            if (confirm('Tem certeza que quer remover o funcionário do mês?')) {
+                employee = null;
+                localStorage.removeItem('sope_employee');
+                document.getElementById('employeeName').value = '';
+                document.getElementById('employeeRole').value = '';
+                document.getElementById('employeePhoto').value = '';
+                document.getElementById('employeePreview').innerHTML = '';
+                alert('✅ Funcionário removido!');
+            }
+        }
+
+        function loadEmployeePreview() {
+            const preview = document.getElementById('employeePreview');
+            if (employee && employee.name) {
+                const photoHtml = employee.photo ? `<img src="${employee.photo}" style="max-width: 150px; border-radius: 8px; margin: 10px 0;">` : '';
+                preview.innerHTML = `
+                    <div style="background: #1a2547; padding: 15px; border-radius: 8px; border: 2px solid #2a4d9e;">
+                        ${photoHtml}
+                        <p style="color: #4a9eff; font-weight: bold; margin: 5px 0;">${employee.name}</p>
+                        <p style="color: #7a8aaa; margin: 0;">${employee.role}</p>
+                    </div>
+                `;
+            } else {
+                preview.innerHTML = '';
+            }
+        }
+
+        let cameraStream = null;
+        let capturedPhotoData = null;
+
+        function openCameraModal() {
+            document.getElementById('cameraModal').style.display = 'flex';
+            resetCameraModal();
+        }
+
+        function closeCameraModal() {
+            document.getElementById('cameraModal').style.display = 'none';
+            stopCamera();
+            resetCameraModal();
+        }
+
+        function resetCameraModal() {
+            document.getElementById('cameraFeed').style.display = 'none';
+            document.getElementById('cameraCanvas').style.display = 'none';
+            document.getElementById('capturedPhoto').style.display = 'none';
+            document.getElementById('startBtn').style.display = 'block';
+            document.getElementById('captureBtn').style.display = 'none';
+            document.getElementById('retakeBtn').style.display = 'none';
+            document.getElementById('acceptBtn').style.display = 'none';
+            capturedPhotoData = null;
+        }
+
+        function startCamera() {
+            const video = document.getElementById('cameraFeed');
+            
+            navigator.mediaDevices.getUserMedia({ 
+                video: { 
+                    facingMode: 'environment',
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                },
+                audio: false 
+            }).then(stream => {
+                cameraStream = stream;
+                video.srcObject = stream;
+                video.style.display = 'block';
+                video.play().catch(err => console.error('Erro ao iniciar vídeo:', err));
+                document.getElementById('startBtn').style.display = 'none';
+                document.getElementById('captureBtn').style.display = 'block';
+            }).catch(err => {
+                alert('⚠️ Erro ao acessar câmera: ' + err.message);
+                console.error('Erro câmera:', err);
+            });
+        }
+
+        function capturePhoto() {
+            const video = document.getElementById('cameraFeed');
+            const canvas = document.getElementById('cameraCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.drawImage(video, 0, 0);
+            
+            capturedPhotoData = canvas.toDataURL('image/jpeg', 0.8);
+            
+            document.getElementById('cameraFeed').style.display = 'none';
+            document.getElementById('capturedPhoto').src = capturedPhotoData;
+            document.getElementById('capturedPhoto').style.display = 'block';
+            document.getElementById('captureBtn').style.display = 'none';
+            document.getElementById('retakeBtn').style.display = 'block';
+            document.getElementById('acceptBtn').style.display = 'block';
+        }
+
+        function retakeCameraPhoto() {
+            document.getElementById('cameraFeed').style.display = 'block';
+            document.getElementById('capturedPhoto').style.display = 'none';
+            document.getElementById('captureBtn').style.display = 'block';
+            document.getElementById('retakeBtn').style.display = 'none';
+            document.getElementById('acceptBtn').style.display = 'none';
+            capturedPhotoData = null;
+        }
+
+        function acceptCameraPhoto() {
+            if (photosToAdd.length >= 5) {
+                alert('⚠️ Limite de 5 fotos atingido!');
+                closeCameraModal();
+                return;
+            }
+            
+            if (capturedPhotoData) {
+                const canvas = document.createElement('canvas');
+                canvas.width = 150;
+                canvas.height = 150;
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                img.onload = function() {
+                    ctx.drawImage(img, 0, 0, 150, 150);
+                    
+                    // Converter base64 para Blob
+                    canvas.toBlob(blob => {
+                        photosToAdd.push(blob);
+                        
+                        const preview = document.getElementById('photosPreview');
+                        const photoDiv = document.createElement('div');
+                        photoDiv.className = 'photo-item';
+                        photoDiv.innerHTML = `
+                            <img src="${capturedPhotoData}" alt="Foto capturada" style="max-width: 100%; border-radius: 6px;">
+                            <button type="button" onclick="removePhoto(${photosToAdd.length - 1})" style="position: absolute; top: 5px; right: 5px; background: #ff6b6b; border: none; color: white; width: 25px; height: 25px; border-radius: 50%; cursor: pointer; font-size: 12px;">✕</button>
+                        `;
+                        photoDiv.style.position = 'relative';
+                        preview.appendChild(photoDiv);
+                        
+                        document.getElementById('photosCount').textContent = photosToAdd.length + '/5 fotos';
+                    }, 'image/jpeg', 0.8);
+                };
+                img.src = capturedPhotoData;
+            }
+            closeCameraModal();
+        }
+
+        function stopCamera() {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraStream = null;
+            }
+        }
+
+        function getTodayDayName() {
+            const days = ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado'];
+            return days[new Date().getDay()];
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            
+            if (clientUsers[user] && clientUsers[user].password === pass) {
+                currentUser = { 
+                    user, 
+                    role: 'client', 
+                    name: clientUsers[user].name, 
+                    post: clientUsers[user].post 
+                };
+            } else if (users[user] && users[user].password === pass) {
+                currentUser = { user, ...users[user] };
+            } else {
+                document.getElementById('loginError').textContent = '❌ Usuário ou senha incorretos';
+                document.getElementById('loginError').style.display = 'block';
+                return;
+            }
+
+            localStorage.setItem('sope_user', JSON.stringify(currentUser));
+            localStorage.setItem('sope_reports', JSON.stringify(reports));
+            localStorage.setItem('sope_employee', JSON.stringify(employee));
+            localStorage.setItem('sope_blogs', JSON.stringify(blogs));
+            localStorage.setItem('sope_clients', JSON.stringify(clientUsers));
+
+            showDashboard();
+        }
+
+        function showDashboard() {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('dashboardContainer').classList.add('active');
+            
+            document.getElementById('userNameDisplay').textContent = currentUser.name;
+            document.getElementById('userAvatarDisplay').textContent = currentUser.name.charAt(0).toUpperCase();
+
+            document.getElementById('coordinatorView').classList.add('hidden');
+            document.getElementById('supervisorView').classList.add('hidden');
+            document.getElementById('clientView').classList.add('hidden');
+
+            if (currentUser.role === 'coordinator') {
+                document.getElementById('coordinatorView').classList.remove('hidden');
+                loadReportsFromGoogleSheets();
+                
+                // Carregar funcionário existente
+                const savedEmployee = localStorage.getItem('sope_employee');
+                if (savedEmployee) {
+                    employee = JSON.parse(savedEmployee);
+                    document.getElementById('employeeName').value = employee.name || '';
+                    document.getElementById('employeeRole').value = employee.role || '';
+                }
+                loadEmployeePreview();
+                setTimeout(() => updateCoordinatorReports(), 500);
+            } else if (currentUser.role.includes('supervisor') || currentUser.role === 'leader') {
+                document.getElementById('supervisorView').classList.remove('hidden');
+                document.getElementById('supervisorTitle').textContent = `👤 ${currentUser.name} - ${getTodayDayName().toUpperCase()}`;
+                setTodayDate('reportDate');
+                populatePostSelect();
+                updateSupervisor();
+            } else if (currentUser.role === 'client') {
+                document.getElementById('clientView').classList.remove('hidden');
+                document.getElementById('clientTitle').textContent = `📍 ${currentUser.post}`;
+                updateClient();
+            }
+        }
+
+        function setTodayDate(id) {
+            const el = document.getElementById(id);
+            if (el) el.value = new Date().toISOString().split('T')[0];
+        }
+
+        function populatePostSelect() {
+            const supervisorType = currentUser.role === 'supervisor_day' ? 'diurno' : currentUser.role === 'supervisor_night' ? 'noturno' : 'lider';
+            const posts = allPosts[supervisorType];
+            const select = document.getElementById('reportPost');
+            select.innerHTML = '<option value="">SELECIONE...</option>';
+            posts.forEach(post => {
+                select.innerHTML += `<option value="${post}">${post}</option>`;
+            });
+
+            const clientPostSelect = document.getElementById('newClientPost');
+            if (clientPostSelect) {
+                clientPostSelect.innerHTML = '<option value="">SELECIONE...</option>';
+                posts.forEach(post => {
+                    clientPostSelect.innerHTML += `<option value="${post}">${post}</option>`;
+                });
+            }
+        }
+
+        function updateSupervisor() {
+            const supervisorType = currentUser.role === 'supervisor_day' ? 'diurno' : currentUser.role === 'supervisor_night' ? 'noturno' : 'lider';
+            const today = getTodayDayName();
+            const todaysRondas = rondasProgramadas[supervisorType][today] || [];
+
+            const rondasContainer = document.getElementById('todaysRondas');
+            rondasContainer.innerHTML = '';
+            if (todaysRondas.length === 0) {
+                rondasContainer.innerHTML = '<p style="color: #7a8aaa; text-align: center;">Sem rondas programadas para hoje</p>';
+            } else {
+                todaysRondas.forEach((ronda, idx) => {
+                    const hasReport = reports.some(r => r.post === ronda && r.supervisor === currentUser.name && r.date === new Date().toISOString().split('T')[0]);
+                    rondasContainer.innerHTML += `
+                        <div class="todo-item">
+                            <span class="todo-time">#${idx + 1}</span>
+                            <span class="todo-post">${ronda}</span>
+                            <span class="todo-status">${hasReport ? '✅ COMPLETA' : '⏳ PENDENTE'}</span>
+                        </div>
+                    `;
+                });
+            }
+
+            document.getElementById('supTodayRondas').textContent = todaysRondas.length;
+            const todayStr = new Date().toISOString().split('T')[0];
+            const completed = reports.filter(r => r.supervisor === currentUser.name && r.date === todayStr).length;
+            document.getElementById('supCompletedRondas').textContent = completed;
+            const totalMinutes = reports.filter(r => r.supervisor === currentUser.name && r.date === todayStr).reduce((a, b) => a + b.minutos, 0);
+            document.getElementById('supTotalMinutes').textContent = totalMinutes;
+
+            // Meus relatórios do dia
+            const myTodayReports = reports.filter(r => r.supervisor === currentUser.name && r.date === todayStr);
+            const myReportsContainer = document.getElementById('supervisorTodayReports');
+            myReportsContainer.innerHTML = '';
+            if (myTodayReports.length === 0) {
+                myReportsContainer.innerHTML = '<p style="color: #7a8aaa; text-align: center;">Nenhum relatório enviado hoje</p>';
+            } else {
+                myTodayReports.slice().reverse().forEach(report => {
+                    let photosHtml = '';
+                    if (report.photos && report.photos.length > 0) {
+                        photosHtml = `
+                            <div class="report-photos">
+                                ${report.photos.map(photo => `<img src="${photo}" class="report-photo-small" alt="Foto" onclick="openPhotoModal('${photo}')">`).join('')}
+                            </div>
+                        `;
+                    }
+                    
+                    myReportsContainer.innerHTML += `
+                        <div class="report-card">
+                            <div class="report-content">
+                                <div class="report-header">
+                                    <span>${report.post}</span>
+                                    <span style="font-size: 11px;">${report.minutos} min</span>
+                                </div>
+                                <div class="report-details">
+                                    <strong>Horário:</strong> ${report.chegada} até ${report.saida}<br>
+                                    <strong>Observações:</strong> ${report.obs}
+                                </div>
+                                ${photosHtml}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        function updateCoordinatorReports() {
+            const period = document.getElementById('coordPeriod').value;
+            const supervisor = document.getElementById('coordSupervisor').value;
+            const post = document.getElementById('coordPost').value;
+
+            let filtered = reports;
+            const today = new Date();
+
+            if (period === 'day') {
+                const todayStr = today.toISOString().split('T')[0];
+                filtered = filtered.filter(r => r.date === todayStr);
+            } else if (period === 'week') {
+                const weekStart = new Date(today);
+                weekStart.setDate(today.getDate() - today.getDay());
+                filtered = filtered.filter(r => new Date(r.date) >= weekStart);
+            } else if (period === 'month') {
+                const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+                filtered = filtered.filter(r => new Date(r.date) >= monthStart);
+            }
+
+            if (supervisor) {
+                filtered = filtered.filter(r => r.supervisor === supervisor);
+            }
+
+            if (post) {
+                filtered = filtered.filter(r => r.post === post);
+            }
+
+            document.getElementById('coordTotalReports').textContent = filtered.length;
+            const totalMinutes = filtered.reduce((a, b) => a + b.minutos, 0);
+            document.getElementById('coordTotalMinutes').textContent = totalMinutes;
+            const avgRate = filtered.length > 0 ? Math.round((totalMinutes / (filtered.length * 100)) * 100) : 0;
+            document.getElementById('coordTotalRate').textContent = avgRate + '%';
+
+            const reportsContainer = document.getElementById('coordinatorReports');
+            reportsContainer.innerHTML = '';
+            if (filtered.length === 0) {
+                reportsContainer.innerHTML = '<p style="color: #7a8aaa; text-align: center;">Nenhum relatório encontrado</p>';
+            } else {
+                filtered.slice().reverse().forEach(report => {
+                    let photosHtml = '';
+                    if (report.photos && report.photos.length > 0) {
+                        photosHtml = `
+                            <div class="report-photos">
+                                ${report.photos.map(photo => `<img src="${photo}" class="report-photo-small" alt="Foto" onclick="openPhotoModal('${photo}')">`).join('')}
+                            </div>
+                        `;
+                    }
+                    
+                    reportsContainer.innerHTML += `
+                        <div class="report-card">
+                            <div class="report-content">
+                                <div class="report-header">
+                                    <span>${report.date} - ${report.supervisor}</span>
+                                    <span style="font-size: 11px;">${report.minutos} min</span>
+                                </div>
+                                <div class="report-details">
+                                    <strong>Posto:</strong> ${report.post}<br>
+                                    <strong>Horário:</strong> ${report.chegada} até ${report.saida}<br>
+                                    <strong>Observações:</strong> ${report.obs}
+                                </div>
+                                ${photosHtml}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            createCoordinatorChart(filtered);
+            createSupervisorPieChart(filtered);
+        }
+
+        function createCoordinatorChart(reportsData) {
+            const ctx = document.getElementById('supervisorsChart');
+            if (!ctx) return;
+
+            const joao = reportsData.filter(r => r.supervisor === 'João Ferreira').reduce((a, b) => a + b.minutos, 0);
+            const weslley = reportsData.filter(r => r.supervisor === 'Weslley Manzoni').reduce((a, b) => a + b.minutos, 0);
+            const ana = reportsData.filter(r => r.supervisor === 'Ana Carolina').reduce((a, b) => a + b.minutos, 0);
+
+            if (ctx.chart) ctx.chart.destroy();
+            ctx.chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['João Ferreira\n(Diurno)', 'Weslley Manzoni\n(Noturno)', 'Ana Carolina\n(Líder)'],
+                    datasets: [{
+                        label: 'Minutos',
+                        data: [joao, weslley, ana],
+                        backgroundColor: ['#4a9eff', '#2aad5a', '#ffa500']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { labels: { color: '#4a9eff' } },
+                        title: { display: true, text: 'Minutos por Supervisor', color: '#4a9eff' }
+                    },
+                    scales: {
+                        y: { ticks: { color: '#7a8aaa' }, grid: { color: '#2a4d9e' } },
+                        x: { ticks: { color: '#7a8aaa' }, grid: { color: '#2a4d9e' } }
+                    }
+                }
+            });
+        }
+
+        function createSupervisorPieChart(reportsData) {
+            const ctx = document.getElementById('supervisorPieChart');
+            if (!ctx) return;
+
+            const joao = reportsData.filter(r => r.supervisor === 'João Ferreira').length;
+            const weslley = reportsData.filter(r => r.supervisor === 'Weslley Manzoni').length;
+            const ana = reportsData.filter(r => r.supervisor === 'Ana Carolina').length;
+
+            if (ctx.chart) ctx.chart.destroy();
+            ctx.chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['João Ferreira\n(Diurno)', 'Weslley Manzoni\n(Noturno)', 'Ana Carolina\n(Líder)'],
+                    datasets: [{
+                        data: [joao, weslley, ana],
+                        backgroundColor: ['#4a9eff', '#2aad5a', '#ffa500']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { labels: { color: '#4a9eff' } },
+                        title: { display: true, text: 'Frequência de Relatórios', color: '#4a9eff' }
+                    }
+                }
+            });
+        }
+
+        function sendReportToGoogleSheets(reportData) {
+            const payload = {
+                supervisor: reportData.supervisor,
+                site: reportData.post,
+                status: 'Completo',
+                observacoes: reportData.obs,
+                chegada: reportData.chegada,
+                saida: reportData.saida,
+                data: reportData.date,
+                minutos: reportData.minutos,
+                foto: reportData.photos && reportData.photos.length > 0 ? 'Sim' : 'Não'
+            };
+
+            fetch(GOOGLE_SHEETS_API, {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            }).catch(error => console.error('Erro ao sincronizar:', error));
+        }
+
+        function loadReportsFromGoogleSheets() {
+            fetch(GOOGLE_SHEETS_API)
+            .then(response => response.json())
+            .then(data => {
+                if (data.data && data.data.length > 1) {
+                    const rows = data.data.slice(1);
+                    rows.forEach(row => {
+                        if (row[1]) {
+                            const report = {
+                                id: Date.now() + Math.random(),
+                                date: (row[7] || '').toString().substring(0, 10),
+                                supervisor: (row[1] || '').toString().trim(),
+                                post: (row[2] || '').toString().trim(),
+                                chegada: (row[5] || '--:--').toString().trim(),
+                                saida: (row[6] || '--:--').toString().trim(),
+                                minutos: parseInt(row[8]) || 0,
+                                obs: (row[4] || '').toString().trim(),
+                                photos: []
+                            };
+                            
+                            if (!reports.some(r => r.supervisor === report.supervisor && r.date === report.date && r.post === report.post)) {
+                                reports.unshift(report);
+                            }
+                        }
+                    });
+                    localStorage.setItem('sope_reports', JSON.stringify(reports));
+                    updateCoordinatorReports();
+                }
+            }).catch(error => console.error('Erro ao carregar:', error));
+        }
+
+        function submitReport() {
+            const date = document.getElementById('reportDate').value;
+            const post = document.getElementById('reportPost').value;
+            const chegada = document.getElementById('reportChegada').value;
+            const saida = document.getElementById('reportSaida').value;
+            const obs = document.getElementById('reportObs').value;
+
+            if (!date || !post || !chegada || !saida || !obs) {
+                alert('⚠️ Preencha todos os campos!');
+                return;
+            }
+
+            // Parse horários corretamente
+            const [chegHoras, chegMin] = chegada.split(':').map(Number);
+            const [saidaHoras, saidaMin] = saida.split(':').map(Number);
+            
+            if (isNaN(chegHoras) || isNaN(chegMin) || isNaN(saidaHoras) || isNaN(saidaMin)) {
+                alert('⚠️ Horários inválidos!');
+                return;
+            }
+
+            let minutos = (saidaHoras * 60 + saidaMin) - (chegHoras * 60 + chegMin);
+            let reportDate = date;
+            
+            // Se minutos < 0, é turno noturno que passou da meia-noite
+            if (minutos < 0) {
+                minutos += 24 * 60; // Adiciona 24 horas
+                // Mantém a data original (dia que iniciou o serviço)
+            }
+
+            let fotos = [];
+            let photosProcessed = 0;
+
+            if (photosToAdd.length === 0) {
+                const newReport = {
+                    id: Date.now(),
+                    date: reportDate, 
+                    supervisor: currentUser.name, 
+                    post, 
+                    chegada, 
+                    saida, 
+                    minutos, 
+                    obs, 
+                    photos: []
+                };
+                reports.unshift(newReport);
+
+                localStorage.setItem('sope_reports', JSON.stringify(reports));
+                sendReportToGoogleSheets(newReport);
+                
+                document.getElementById('reportDate').value = new Date().toISOString().split('T')[0];
+                document.getElementById('reportPost').value = '';
+                document.getElementById('reportChegada').value = '';
+                document.getElementById('reportSaida').value = '';
+                document.getElementById('reportObs').value = '';
+                document.getElementById('reportPhotos').value = '';
+                document.getElementById('photosPreview').innerHTML = '';
+                photosToAdd = [];
+
+                alert('✅ Relatório enviado!');
+                updateSupervisor();
+            } else {
+                photosToAdd.forEach((file, index) => {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        fotos.push(ev.target.result);
+                        photosProcessed++;
+                        
+                        if (photosProcessed === photosToAdd.length) {
+                            const newReport = {
+                                id: Date.now(),
+                                date: reportDate, 
+                                supervisor: currentUser.name, 
+                                post, 
+                                chegada, 
+                                saida, 
+                                minutos, 
+                                obs, 
+                                photos: fotos
+                            };
+                            reports.unshift(newReport);
+
+                            localStorage.setItem('sope_reports', JSON.stringify(reports));
+                            sendReportToGoogleSheets(newReport);
+                            
+                            document.getElementById('reportDate').value = new Date().toISOString().split('T')[0];
+                            document.getElementById('reportPost').value = '';
+                            document.getElementById('reportChegada').value = '';
+                            document.getElementById('reportSaida').value = '';
+                            document.getElementById('reportObs').value = '';
+                            document.getElementById('reportPhotos').value = '';
+                            document.getElementById('photosPreview').innerHTML = '';
+                            photosToAdd = [];
+
+                            alert('✅ Relatório enviado com ' + fotos.length + ' foto(s)!');
+                            updateSupervisor();
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        }
+
+        function createClient() {
+            const post = document.getElementById('newClientPost').value;
+            const user = document.getElementById('newClientUser').value;
+            const pass = document.getElementById('newClientPass').value;
+
+            if (!post || !user || !pass) {
+                alert('⚠️ Preencha todos os campos!');
+                return;
+            }
+
+            clientUsers[user] = { name: post, post: post, password: pass };
+            localStorage.setItem('sope_clients', JSON.stringify(clientUsers));
+
+            document.getElementById('newClientPost').value = '';
+            document.getElementById('newClientUser').value = '';
+            document.getElementById('newClientPass').value = '';
+
+            alert(`✅ Usuário criado!\nPosto: ${post}\nLogin: ${user}\nSenha: ${pass}`);
+        }
+
+        function updateClient() {
+            const postName = currentUser.post;
+            const postReports = reports.filter(r => r.post === postName);
+            const today = new Date().toISOString().split('T')[0];
+            const todayReports = postReports.filter(r => r.date === today);
+            const lastVisit = todayReports.length > 0 ? todayReports[todayReports.length - 1] : null;
+
+            if (lastVisit) {
+                document.getElementById('clientLast').textContent = lastVisit.minutos;
+            } else {
+                document.getElementById('clientLast').textContent = '--';
+            }
+
+            document.getElementById('clientTotalRounds').textContent = postReports.length;
+            const avgRate = postReports.length > 0 ? Math.round((postReports.reduce((a, b) => a + b.minutos, 0) / (postReports.length * 100)) * 100) : 0;
+            document.getElementById('clientAvgRate').textContent = avgRate + '%';
+
+            // Funcionário do mês
+            if (employee && employee.name) {
+                document.getElementById('clientEmployeeSection').style.display = 'block';
+                const cardHtml = `
+                    ${employee.photo ? `<img src="${employee.photo}" class="employee-photo-card" alt="Funcionário">` : '<div class="employee-photo-card" style="background: linear-gradient(135deg, #2a4d9e, #4a9eff); display: flex; align-items: center; justify-content: center;"><span style="font-size: 48px;">👤</span></div>'}
+                    <div class="modal-employee-name">${employee.name}</div>
+                    <div class="modal-employee-role">${employee.role || 'Destaque do Mês'}</div>
+                `;
+                document.getElementById('employeeCardClient').innerHTML = cardHtml;
+            }
+
+            createClientChart(postReports);
+            createSupervisorFrequencyChart(postReports);
+
+            const reportsContainer = document.getElementById('clientReportsWithPhotos');
+            reportsContainer.innerHTML = '';
+            if (postReports.length === 0) {
+                reportsContainer.innerHTML = '<p style="color: #7a8aaa; text-align: center;">Nenhum relatório</p>';
+            } else {
+                postReports.slice().reverse().forEach(report => {
+                    let photosHtml = '';
+                    if (report.photos && report.photos.length > 0) {
+                        photosHtml = `
+                            <div class="report-photos">
+                                ${report.photos.map(photo => `<img src="${photo}" class="report-photo-small" alt="Foto" onclick="openPhotoModal('${photo}')">`).join('')}
+                            </div>
+                        `;
+                    }
+                    
+                    reportsContainer.innerHTML += `
+                        <div class="report-card">
+                            <div class="report-content">
+                                <div class="report-header">
+                                    <span>${report.date} - ${report.supervisor}</span>
+                                    <span style="font-size: 11px;">${report.minutos} min</span>
+                                </div>
+                                <div class="report-details">
+                                    <strong>Horário:</strong> ${report.chegada} até ${report.saida}<br>
+                                    <strong>Observações:</strong> ${report.obs}
+                                </div>
+                                ${photosHtml}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            if (blogs.length > 0) {
+                document.getElementById('clientBlogSection').style.display = 'block';
+                const display = document.getElementById('clientBlogDisplay');
+                display.innerHTML = '';
+                blogs.forEach(post => {
+                    display.innerHTML += `
+                        <div class="blog-card">
+                            <div class="blog-title">${post.title}</div>
+                            <div class="blog-date">${post.date}</div>
+                            <div style="color: #b0b8cc;">${post.content}</div>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        function createClientChart(reportsData) {
+            const ctx = document.getElementById('clientChart');
+            if (!ctx) return;
+
+            const supervisors = ['João Ferreira', 'Weslley Manzoni', 'Ana Carolina'];
+            const data = supervisors.map(sup => 
+                reportsData.filter(r => r.supervisor === sup).reduce((a, b) => a + b.minutos, 0)
+            );
+            
+            if (ctx.chart) ctx.chart.destroy();
+            ctx.chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Sup. Diurno', 'Sup. Noturno', 'Líder'],
+                    datasets: [{
+                        label: 'Minutos',
+                        data: data,
+                        backgroundColor: ['#4a9eff', '#2aad5a', '#ffa500']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { labels: { color: '#4a9eff' } },
+                        title: { display: true, text: 'Minutos por Supervisor', color: '#4a9eff' }
+                    },
+                    scales: {
+                        y: { ticks: { color: '#7a8aaa' }, grid: { color: '#2a4d9e' } },
+                        x: { ticks: { color: '#7a8aaa' }, grid: { color: '#2a4d9e' } }
+                    }
+                }
+            });
+        }
+
+        function createSupervisorFrequencyChart(reportsData) {
+            const ctx = document.getElementById('supervisorFrequencyChart');
+            if (!ctx) return;
+
+            const joao = reportsData.filter(r => r.supervisor === 'João Ferreira').length;
+            const weslley = reportsData.filter(r => r.supervisor === 'Weslley Manzoni').length;
+            const ana = reportsData.filter(r => r.supervisor === 'Ana Carolina').length;
+
+            if (ctx.chart) ctx.chart.destroy();
+            ctx.chart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Sup. Diurno', 'Sup. Noturno', 'Líder'],
+                    datasets: [{
+                        data: [joao, weslley, ana],
+                        backgroundColor: ['#4a9eff', '#2aad5a', '#ffa500']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { labels: { color: '#4a9eff' } },
+                        title: { display: true, text: 'Frequência de Visitas', color: '#4a9eff' }
+                    }
+                }
+            });
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            document.getElementById('loginContainer').style.display = 'flex';
+            document.getElementById('dashboardContainer').classList.remove('active');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        window.addEventListener('load', () => {
+            const saved = localStorage.getItem('sope_reports');
+            if (saved) reports = JSON.parse(saved);
+            const savedEmp = localStorage.getItem('sope_employee');
+            if (savedEmp) employee = JSON.parse(savedEmp);
+            const savedBlogs = localStorage.getItem('sope_blogs');
+            if (savedBlogs) blogs = JSON.parse(savedBlogs);
+            const savedClients = localStorage.getItem('sope_clients');
+            if (savedClients) clientUsers = JSON.parse(savedClients);
+            const savedUsers = localStorage.getItem('sope_users');
+            if (savedUsers) users = JSON.parse(savedUsers);
+
+            const savedUser = localStorage.getItem('sope_user');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showDashboard();
+            }
+        });
+    </script>
+</body>
+</html>
